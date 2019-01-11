@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
-@Service("redisService")
+@Service
 public class RedisServiceImpl implements RedisService {
 
     @Resource
@@ -131,13 +131,12 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public boolean srand(String key, long count) {
-        boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
+    public String srand(String key, long count) {
+        String result = redisTemplate.execute(new RedisCallback<String>() {
             @Override
-            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
                 RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                connection.sRandMember(serializer.serialize(key),count);
-                return true;
+                return serializer.deserialize(connection.sRandMember(serializer.serialize(key)));
             }
         });
         return result;

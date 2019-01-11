@@ -4,6 +4,7 @@ import com.upup.crawler.bean.LoggerMessage;
 import com.upup.crawler.bean.LoggerQueue;
 import com.upup.crawler.service.RedisService;
 import com.upup.crawler.service.ReptileService;
+import com.upup.crawler.service.impl.KnReptileServiceImpl;
 import com.upup.crawler.utils.Statics;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,7 +33,8 @@ import java.util.concurrent.Executors;
 @SpringBootApplication
 public class CrawlerApplication implements CommandLineRunner {
 
-
+    @Resource(name = "knReptileServiceImpl")
+    ReptileService reptileService;
     public static void main(String[] args) {
         new SpringApplicationBuilder(CrawlerApplication.class)
                 .web(WebApplicationType.SERVLET)
@@ -40,6 +43,19 @@ public class CrawlerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+//                    reptileService.getFlight();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
     @Autowired
     private SimpMessagingTemplate messagingTemplate;

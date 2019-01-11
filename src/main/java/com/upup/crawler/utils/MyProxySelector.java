@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -18,11 +19,11 @@ public class MyProxySelector extends ProxySelector {
     Map<String, Proxy> proxyMap = new HashMap<>();
     @Autowired
     RedisService redisService;
-
     @Override
     public List<Proxy> select(URI uri) {
         proxies.clear();
-        String string =redisService.srand("ips",1);
+        System.err.println(redisService);
+        String string = redisService.srand("ip_pool",1);
         String[] ip = string.split(":");
         proxies.add(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip[0], Integer.parseInt(ip[1]))));
         return proxies;
